@@ -1,0 +1,100 @@
+{
+  "lexicon": 1,
+  "id": "ai.agent.context",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "Portable AI agent context stored on a user's AT Protocol PDS. Represents what an AI agent knows about the user — preferences, projects, relationships, and learned facts.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["createdAt", "agentId", "version"],
+        "properties": {
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "When this context record was first created"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "When this context record was last updated"
+          },
+          "agentId": {
+            "type": "string",
+            "description": "Identifier for the AI agent or system that owns this context record"
+          },
+          "version": {
+            "type": "integer",
+            "description": "Schema version for this context record"
+          },
+          "preferences": {
+            "type": "object",
+            "description": "User preferences the agent has learned",
+            "properties": {
+              "communicationStyle": { "type": "string" },
+              "responseLength": { "type": "string" },
+              "custom": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["key", "value"],
+                  "properties": {
+                    "key": { "type": "string" },
+                    "value": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "facts": {
+            "type": "array",
+            "description": "Key facts the agent has learned about the user",
+            "items": {
+              "type": "object",
+              "required": ["fact", "learnedAt"],
+              "properties": {
+                "fact": { "type": "string" },
+                "category": { "type": "string" },
+                "confidence": { "type": "number" },
+                "learnedAt": { "type": "string", "format": "datetime" }
+              }
+            }
+          },
+          "projects": {
+            "type": "array",
+            "description": "Active projects or topics the agent is aware of",
+            "items": {
+              "type": "object",
+              "required": ["name"],
+              "properties": {
+                "name": { "type": "string" },
+                "description": { "type": "string" },
+                "status": { "type": "string" },
+                "lastMentioned": { "type": "string", "format": "datetime" }
+              }
+            }
+          },
+          "relationships": {
+            "type": "array",
+            "description": "People the agent knows the user has relationships with",
+            "items": {
+              "type": "object",
+              "required": ["name"],
+              "properties": {
+                "name": { "type": "string" },
+                "relationship": { "type": "string" },
+                "notes": { "type": "string" }
+              }
+            }
+          },
+          "recentTopics": {
+            "type": "array",
+            "description": "Recent topics of conversation or focus",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}
