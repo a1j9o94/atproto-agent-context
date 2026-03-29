@@ -18,6 +18,82 @@ This project adds one new thing: an `agent.context` lexicon — a structured rec
 - Edit or revoke agent memory at any time
 - Any app can request access to your context — you control who gets it
 
+## Quickstart
+
+### 1. Install dependencies
+
+```bash
+bun install
+```
+
+### 2. Set environment variables
+
+Copy the template and fill in your credentials:
+
+```bash
+cp .env.example .env
+```
+
+| Variable | Description |
+|---|---|
+| `ATPROTO_HANDLE` | Your Bluesky handle (e.g. `yourname.bsky.social`) |
+| `ATPROTO_APP_PASSWORD` | An [app password](https://bsky.app/settings/app-passwords) (not your account password) |
+| `ATPROTO_PDS_URL` | PDS URL (default: `https://bsky.social`) |
+
+### 3. Run the server
+
+```bash
+bun run mcp-server/index.ts
+```
+
+### 4. Configure in Claude Desktop
+
+Add to your `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "atproto-agent-context": {
+      "command": "bun",
+      "args": ["run", "/absolute/path/to/mcp-server/index.ts"],
+      "env": {
+        "ATPROTO_HANDLE": "yourname.bsky.social",
+        "ATPROTO_APP_PASSWORD": "xxxx-xxxx-xxxx-xxxx",
+        "ATPROTO_PDS_URL": "https://bsky.social"
+      }
+    }
+  }
+}
+```
+
+### 5. Configure in Cursor / other MCP clients
+
+Add to your `.cursor/mcp.json` (or equivalent):
+
+```json
+{
+  "mcpServers": {
+    "atproto-agent-context": {
+      "command": "bun",
+      "args": ["run", "/absolute/path/to/mcp-server/index.ts"],
+      "env": {
+        "ATPROTO_HANDLE": "yourname.bsky.social",
+        "ATPROTO_APP_PASSWORD": "xxxx-xxxx-xxxx-xxxx",
+        "ATPROTO_PDS_URL": "https://bsky.social"
+      }
+    }
+  }
+}
+```
+
+## MCP Tools
+
+| Tool | Description |
+|---|---|
+| `append_context` | Write a new context record to the PDS (immutable append-only log entry) |
+| `get_context` | Read recent context records filtered by `contextId` |
+| `list_contexts` | List all unique `contextId` values stored on the PDS |
+
 ## Status
 
 🚧 Early — defining the spec. Contributions and discussion welcome.
@@ -26,15 +102,15 @@ This project adds one new thing: an `agent.context` lexicon — a structured rec
 
 ```
 /lexicon          # atproto lexicon definitions (agent.context schema)
-/mcp-server       # MCP server that reads/writes agent context to atproto PDS
+/mcp-server       # MCP server (Bun + TypeScript + fastmcp)
 /docs             # Spec, design decisions, prior art
 /examples         # Example agent context records
 ```
 
 ## Roadmap
 
-- [ ] Define minimal `agent.context` lexicon v0
-- [ ] Build MCP server (TypeScript, atproto SDK)
+- [x] Define minimal `agent.context` lexicon v0
+- [x] Build MCP server (TypeScript, atproto SDK)
 - [ ] Prototype: agent using atproto PDS as memory store
 - [ ] Permission model — how agents request/scope access
 - [ ] Short-form video content on atproto (related: TikTok-on-atproto)

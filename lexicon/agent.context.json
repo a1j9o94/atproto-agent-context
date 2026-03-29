@@ -8,8 +8,12 @@
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["createdAt", "agentId", "version"],
+        "required": ["createdAt", "agentId", "version", "contextId"],
         "properties": {
+          "contextId": {
+            "type": "string",
+            "description": "Unique identifier grouping related context entries (e.g. per-project or per-user scope)"
+          },
           "createdAt": {
             "type": "string",
             "format": "datetime",
