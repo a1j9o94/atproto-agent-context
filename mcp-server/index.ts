@@ -108,6 +108,41 @@ server.addTool({
   },
 });
 
+// ── append_event ─────────────────────────────────────────────────────────────
+
+server.addTool({
+  name: "append_event",
+  description:
+    "Write a lightweight per-message event to the user's PDS. Call this after every exchange to build a real-time conversation log. Each record is immutable and TID-keyed.",
+  parameters: z.object({
+    contextId: z.string().describe("The context this event belongs to (e.g. 'personal', 'work')"),
+    agentId: z.string().describe("Identifier for the AI agent writing this event"),
+    role: z.enum(["user", "assistant"]).describe("Who sent this message"),
+    content: z.string().describe("The message content to log"),
+    metadata: z.record(z.string(), z.unknown()).optional().describe("Any additional key-value metadata"),
+  }),
+  execute: async (args) => {
+    const now = new Date().toISOString();
+    const result = await createContextRecord({
+      contextId: args.contextId,
+      agentId: args.agentId,
+      recordType: "event",
+      version: 1,
+      createdAt: now,
+      facts: [],
+      projects: [],
+      recentTopics: [],
+      event: {
+        role: args.role,
+        content: args.content,
+        timestamp: now,
+        metadata: args.metadata,
+      },
+    } as Parameters<typeof createContextRecord>[0]);
+    return JSON.stringify(result, null, 2);
+  },
+});
+
 // ── Start ───────────────────────────────────────────────────────────────────
 
 server.start({ transportType: "stdio" });

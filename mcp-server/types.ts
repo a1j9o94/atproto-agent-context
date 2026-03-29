@@ -31,9 +31,17 @@ export interface Preferences {
   custom?: CustomPreference[];
 }
 
+export interface EventPayload {
+  role: "user" | "assistant";
+  content: string;
+  timestamp: string;
+  metadata?: Record<string, unknown>;
+}
+
 export interface AgentContextRecord {
   $type: "ai.agent.context";
   contextId: string;
+  recordType?: "summary" | "event";  // "summary" for append_context, "event" for append_event
   createdAt: string;
   updatedAt?: string;
   agentId: string;
@@ -43,6 +51,7 @@ export interface AgentContextRecord {
   projects?: Project[];
   relationships?: Relationship[];
   recentTopics?: string[];
+  event?: EventPayload;  // only present on recordType: "event"
 }
 
 export interface StoredRecord {
